@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+#MISE description="Run plugin tests - install and execute tool"
+set -euo pipefail
+
+mise plugin link --force apt-larder .
+mise cache clear
+mise install apt-larder@1.0.0
+
+# Capture and display the output while also verifying it
+output=$(mise exec "apt-larder@1.0.0" -- "apt-larder" --version)
+echo "apt-larder output: ${output}"
+
+if echo "${output}" | grep -q '1.0.0'; then
+  echo "✓ Tests passed"
+else
+  echo "✗ Test failed: expected version apt-larder@1.0.0"
+  exit 1
+fi
